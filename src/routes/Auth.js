@@ -2,10 +2,15 @@ import { async } from '@firebase/util';
 import React from 'react';
 import { useState } from 'react';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
+  GithubAuthProvider,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  getAuth,
 } from 'firebase/auth';
+import { firebaseInitialize } from '../fbase';
+import { auth } from '../fbase';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -39,6 +44,18 @@ const Auth = () => {
     }
   };
   const toggleAccount = () => setNewAccount((prev) => !prev);
+  const onSocialClick = async (e) => {
+    const {
+      target: { name },
+    } = e;
+    let provider;
+    if (name === 'Google') {
+      provider = new GoogleAuthProvider();
+    } else if (name === 'Github') {
+      provider = new GithubAuthProvider();
+    }
+    await signInWithPopup(auth, provider);
+  };
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -70,8 +87,12 @@ const Auth = () => {
         {newAccount ? 'Log in' : 'Create Account'}
       </span>
       <div>
-        <button>Continue With Googie</button>
-        <button>Continue With Github</button>
+        <button onClick={onSocialClick} name='Google'>
+          Continue With Googie
+        </button>
+        <button onClick={onSocialClick} name='Github'>
+          Continue With Github
+        </button>
       </div>
     </div>
   );
