@@ -10,8 +10,8 @@ import {
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [newAccount, setNewAccount] = useState(false);
-
+  const [newAccount, setNewAccount] = useState(true);
+  const [error, setError] = useState('');
   const onChange = (e) => {
     const {
       target: { name, value },
@@ -35,9 +35,10 @@ const Auth = () => {
       }
       console.log(data);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
+  const toggleAccount = () => setNewAccount((prev) => !prev);
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -62,7 +63,12 @@ const Auth = () => {
           type={'submit'}
           value={newAccount ? 'Create Account' : 'Login'}
         />
+        <br />
+        {error}
       </form>
+      <span onClick={toggleAccount}>
+        {newAccount ? 'Log in' : 'Create Account'}
+      </span>
       <div>
         <button>Continue With Googie</button>
         <button>Continue With Github</button>
