@@ -7,8 +7,8 @@ import { useState } from 'react';
 const Tweet = ({ tweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
+  const NweetTextRef = doc(dbService, 'wteers', `${tweetObj.id}`);
   const onDeleteClick = async () => {
-    const NweetTextRef = doc(dbService, 'wteers', `${tweetObj.id}`);
     const ok = window.confirm('삭제 할거에요?');
     console.log(ok);
     if (ok) {
@@ -19,8 +19,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
   const toggleEditing = () => setEditing((prev) => !prev);
   const onSubmit = async (e) => {
     e.preventDefault();
-    const NweetTextRef = doc(dbService, 'wteers', `${tweetObj.id}`);
-    console.log(tweetObj, newTweet);
+
     await updateDoc(NweetTextRef, {
       text: newTweet,
     });

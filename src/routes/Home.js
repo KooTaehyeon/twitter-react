@@ -14,7 +14,7 @@ import Tweet from '../components/Tweet';
 const Home = ({ userObj }) => {
   const [wteer, setWteer] = useState('');
   const [wteers, setWteers] = useState([]);
-
+  const [attachment, setAttachment] = useState();
   useEffect(() => {
     const q = query(
       collection(dbService, 'wteers'),
@@ -48,6 +48,23 @@ const Home = ({ userObj }) => {
     } = e;
     setWteer(value);
   };
+  const onFileChange = (e) => {
+    const {
+      target: { files },
+    } = e;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedE) => {
+      const {
+        currentTarget: { result },
+      } = finishedE;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
+  };
+  const onClearPhot = () => {
+    setAttachment(null);
+  };
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -58,7 +75,14 @@ const Home = ({ userObj }) => {
           placeholder="What's on your mind?"
           max={120}
         />
+        <input type={'file'} accept={'image/*'} onChange={onFileChange} />
         <input type='submit' value={'Twitter'} />
+        {attachment && (
+          <div>
+            <img src={attachment} width='50px' height={'50px'} />
+            <button onClick={onClearPhot}>이미지 제거</button>
+          </div>
+        )}
       </form>
       <div>
         {wteers.map((item, i) => {
