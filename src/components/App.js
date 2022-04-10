@@ -6,11 +6,12 @@ import { useEffect } from 'react';
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
-        setInit(true);
+        setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
@@ -22,7 +23,11 @@ function App() {
   // }, 10000);
   return (
     <div className='App'>
-      {init ? <Router isLoggedIn={isLoggedIn} /> : 'Initlizing...'}
+      {init ? (
+        <Router isLoggedIn={isLoggedIn} userObj={userObj} />
+      ) : (
+        'Initlizing...'
+      )}
       <footer>@Twitter{new Date().getFullYear()}</footer>
     </div>
   );

@@ -4,36 +4,40 @@ import { dbService } from '../fbase';
 import {
   addDoc,
   collection,
-  serverTimestamp,
-  getDocs,
+  onSnapshot,
   query,
+  orderBy,
+  serverTimestamp,
 } from 'firebase/firestore';
 import { useEffect } from 'react';
-const Home = () => {
+import Tweet from '../components/Tweet';
+const Home = ({ userObj }) => {
   const [wteer, setWteer] = useState('');
   const [wteers, setWteers] = useState([]);
-  const getWweets = async () => {
-    const q = query(collection(dbService, 'wteers'));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const wweetObj = {
-        ...doc.data(),
-        id: doc.id,
-      };
-      setWteers((prev) => [wweetObj, ...prev]);
-    });
-  };
+
   useEffect(() => {
-    getWweets();
+    const q = query(
+      collection(dbService, 'wteers'),
+      orderBy('createdAt', 'desc')
+    );
+    onSnapshot(q, (snapshot) => {
+      const nweetArr = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setWteers(nweetArr);
+    });
   }, []);
   console.log(wteers);
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(`서브밋 하는 느윗:${wteer}`);
+    console.log(`서브밋 하는 트윗:${wteer}`);
     await addDoc(collection(dbService, 'wteers'), {
-      wteer,
+      text: wteer,
       createdAt: serverTimestamp(),
+      creatorId: userObj.uid,
     });
     setWteer('');
   };
@@ -57,11 +61,13 @@ const Home = () => {
         <input type='submit' value={'Twitter'} />
       </form>
       <div>
-        {wteers.map((item) => {
+        {wteers.map((item, i) => {
           return (
-            <div key={item.id}>
-              <h4>{item.wteer}</h4>
-            </div>
+            <Tweet
+              key={i}
+              tweetObj={item}
+              isOwner={item.creatorId === userObj.uid}
+            />
           );
         })}
       </div>
