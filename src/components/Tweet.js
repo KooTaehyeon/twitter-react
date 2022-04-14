@@ -31,6 +31,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
     } = e;
     setNewTweet(value);
   };
+  console.log(tweetObj);
   return (
     <div>
       {editing ? (
@@ -50,6 +51,9 @@ const Tweet = ({ tweetObj, isOwner }) => {
       ) : (
         <>
           <h4>{tweetObj.text}</h4>
+          <div>
+            <img src={tweetObj.attachmentUrl} width='150px' height={'150px'} />{' '}
+          </div>
           {isOwner && (
             <>
               <button onClick={toggleEditing}>수정</button>

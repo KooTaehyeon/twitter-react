@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { dbService } from '../fbase';
+import { dbService, storageService } from '../fbase';
+import { v4 } from 'uuid';
 import {
   addDoc,
   collection,
@@ -10,11 +11,13 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { useEffect } from 'react';
+import { ref, uploadString, getDownloadURL } from '@firebase/storage';
 import Tweet from '../components/Tweet';
+
 const Home = ({ userObj }) => {
   const [wteer, setWteer] = useState('');
   const [wteers, setWteers] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState('');
   useEffect(() => {
     const q = query(
       collection(dbService, 'wteers'),
@@ -30,16 +33,33 @@ const Home = ({ userObj }) => {
     });
   }, []);
   console.log(wteers);
+
   const onSubmit = async (e) => {
     e.preventDefault();
+    let attachmentUrl = '';
+    if (attachment != '') {
+      const fileRef = ref(storageService, `${userObj.uid}/${v4()}`);
+      const response = await uploadString(fileRef, attachment, 'data_url');
 
-    console.log(`서브밋 하는 트윗:${wteer}`);
-    await addDoc(collection(dbService, 'wteers'), {
+      attachmentUrl = await getDownloadURL(response.ref);
+    }
+    // await addDoc(collection(dbService, 'wteers'), {
+    //   text: wteer,
+    //   createdAt: serverTimestamp(),
+    //   creatorId: userObj.uid,
+    // });
+    // setWteer('');
+
+    const wweetObj = {
       text: wteer,
-      createdAt: serverTimestamp(),
+      createdAt: Date.now(),
       creatorId: userObj.uid,
-    });
+      attachmentUrl,
+    };
+
+    await addDoc(collection(dbService, 'wteers'), wweetObj);
     setWteer('');
+    setAttachment('');
   };
 
   const onChange = (e) => {
@@ -63,7 +83,7 @@ const Home = ({ userObj }) => {
     reader.readAsDataURL(theFile);
   };
   const onClearPhot = () => {
-    setAttachment(null);
+    setAttachment('');
   };
   return (
     <div>

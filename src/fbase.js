@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import 'firebase/database';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 const firebaseConfig = {
   apiKey: 'AIzaSyD_7mpR7v9WCEWeIxmc4ZL1JyJymvaQ-QI',
   authDomain: 'twitter-react-7c4f5.firebaseapp.com',
@@ -17,3 +18,5 @@ export const firebaseInitialize = initializeApp(firebaseConfig);
 export const auth = getAuth();
 
 export const dbService = getFirestore();
+
+export const storageService = getStorage();
