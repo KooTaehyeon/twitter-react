@@ -1,8 +1,9 @@
 import React from 'react';
-import { dbService } from '../fbase';
+import { dbService, storageService } from '../fbase';
 import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { async } from '@firebase/util';
 import { useState } from 'react';
+import { deleteObject, ref, getFirestore } from '@firebase/storage';
 
 const Tweet = ({ tweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
@@ -14,6 +15,8 @@ const Tweet = ({ tweetObj, isOwner }) => {
     if (ok) {
       //delete
       await deleteDoc(NweetTextRef);
+      const urlRef = ref(storageService, tweetObj.attachmentURL);
+      await deleteObject(urlRef);
     }
   };
   const toggleEditing = () => setEditing((prev) => !prev);
