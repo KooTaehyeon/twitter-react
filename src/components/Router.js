@@ -8,7 +8,7 @@ import Profile from '../routes/Profile';
 const Router = ({ isLoggedIn, userObj }) => {
   return (
     <BrowserRouter>
-      {isLoggedIn && <Navigation></Navigation>}
+      {isLoggedIn && <Navigation userObj={userObj} />}
       <Routes>
         {isLoggedIn ? (
           <>
