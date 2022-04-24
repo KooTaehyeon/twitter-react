@@ -46,18 +46,29 @@ const Profile = ({ userObj, refresUser }) => {
     getMyNweets();
   }, []);
   return (
-    <>
-      <Form onSubmit={onSubmit}>
+    <div className='container'>
+      <Form onSubmit={onSubmit} className='profileForm'>
         <input
           type={'text'}
           placeholder='Dispaly name'
           onChange={onChange}
+          autoFocus
           value={newDisplayName}
+          className='formInput'
         />
-        <input type={'submit'} value='update Prifule' />
+        <input
+          type={'submit'}
+          value='Update Profile'
+          className='formBtn'
+          style={{
+            marginTop: 10,
+          }}
+        />
       </Form>
-      <button onClick={onLogOut}>log out</button>
-    </>
+      <span className='formBtn cancelBtn logOut' onClick={onLogOut}>
+        Log Out
+      </span>
+    </div>
   );
 };
 const Form = styled.form``;

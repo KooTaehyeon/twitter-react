@@ -15,6 +15,8 @@ function App() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserObj(user);
+      } else {
+        setUserObj(null);
       }
       setInit(true);
     });
