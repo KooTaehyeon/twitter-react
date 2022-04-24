@@ -6,7 +6,7 @@ import { updateProfile } from '@firebase/auth';
 import { collection, getDocs, query, where } from '@firebase/firestore';
 import { useState } from 'react';
 import styled from 'styled-components';
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj, refresUser }) => {
   const history = useNavigate();
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const onChange = (e) => {
@@ -31,12 +31,17 @@ const Profile = ({ userObj }) => {
       console.log(doc.id, ' => ', doc.data());
     });
   };
-  const onSubmit = async (e) => {
-    e.preventDefault();
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
     if (userObj.displayName !== newDisplayName) {
-      await updateProfile(userObj, { displayName: newDisplayName });
+      await updateProfile(userObj, {
+        displayName: newDisplayName,
+      });
+      refresUser();
     }
   };
+
   useEffect(() => {
     getMyNweets();
   }, []);
