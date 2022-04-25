@@ -2,4 +2,4 @@
 
 allow read, write: if
 request.auth != null;
-록그인 한사람만 사용가능한 파이어베이스 규칙
+로그인 한사람만 사용가능한 파이어베이스 규칙
